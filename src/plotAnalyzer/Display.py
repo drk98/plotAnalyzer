@@ -6,7 +6,7 @@ from requests import get
 from pdf2image import convert_from_path
 import webbrowser
 from PIL import Image, ImageTk
-
+from plotAnalyzer.tooltip import CreateToolTip
 
 class ScrollableFrame(ttk.Frame):
     """
@@ -94,6 +94,9 @@ def display(fname: str, type: str, url: str):
         # panel.configure(image=img, width=img.width(), height=img.height())
         panel.image = img
         panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url + file))
+
+        CreateToolTip(panel, file)
+
 
     for tf in tempFiles:
         tf.close()
