@@ -26,9 +26,28 @@ def getFiles(folder: str) -> list:
     return files
 
 
+def printType(filePath: str, prefix: str, type: str):
+    if exists(filePath):
+        print(f"{type} Figures")
+        print("===========================================")
+        with open(filePath, 'r') as f:
+            for line in f.readlines():
+                if line.split(':')[0] == prefix:
+                    print(line.split(':')[1].replace('\n', ""))
+        print("===========================================")
+    else:
+        print(f"No \"{type}\" figures exist")
+
+
+def writeImageResult(filePath: str, prefix: str, toWrite: str):
+    with open(filePath, 'a+') as f:
+        f.write(f"{prefix}:{toWrite}\n")
+
+
 def analyzerFiles(folder=None):
     if folder is None:
         folder = selectFolder()
+
     files = getFiles(folder)
     analyzerRoot = Tk()
     analyzerRoot.title('Analyzer')
@@ -44,7 +63,7 @@ def analyzerFiles(folder=None):
     panel = Label(frm, image=img)
     panel.grid(row=1, columnspan=3)
 
-    def nextImage():
+    def nextHelper():
         nonlocal i
 
         nextImg = PhotoImage(master=frm, file=join(folder, files[i]))
@@ -55,61 +74,26 @@ def analyzerFiles(folder=None):
         fnameLabel.text = join(folder, files[i])
         i += 1
 
-    def goodImage():
-        with open(join(folder, RESULTS_FILENAME), 'a+') as f:
-            f.write(f"g:{files[i]}\n")
-        nextImage()
+    def nextImage(prefix: str):
+        writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i])
+        nextHelper()
 
-    def badImage():
-        with open(join(folder, RESULTS_FILENAME), 'a+') as f:
-            f.write(f"b:{files[i]}\n")
-        nextImage()
+    ttk.Button(frm, text="Good Figure", command=lambda: nextImage('g')).grid(row=2, column=0)
+    ttk.Button(frm, text="Interesting Figure", command=lambda: nextImage('i')).grid(row=2, column=1)
+    ttk.Button(frm, text="Bad Figure", command=lambda: nextImage('b')).grid(row=2, column=2)
 
-    def interestingImage():
-        with open(join(folder, RESULTS_FILENAME), 'a+') as f:
-            f.write(f"i:{files[i]}\n")
-        nextImage()
-
-    ttk.Button(frm, text="Good Figure", command=goodImage).grid(row=2, column=0)
-    ttk.Button(frm, text="Interesting Figure", command=interestingImage).grid(row=2, column=1)
-    ttk.Button(frm, text="Bad Figure", command=badImage).grid(row=2, column=2)
-
-    def printGoodFigures():
-        if exists(join(folder, RESULTS_FILENAME)):
-            with open(join(folder, RESULTS_FILENAME), 'r') as f:
-                for line in f.readlines():
-                    if line.split(':')[0] == 'g':
-                        print(line.split(':')[1].replace('\n', ""))
-        else:
-            print("No good figures exist")
-
-    def printBadFigures():
-        if exists(join(folder, RESULTS_FILENAME)):
-            with open(join(folder, RESULTS_FILENAME), 'r') as f:
-                for line in f.readlines():
-                    if line.split(':')[0] == 'b':
-                        print(line.split(':')[1].replace('\n', ""))
-        else:
-            print("No bad figures exist")
-
-    def printInterestingFigures():
-        if exists(join(folder, RESULTS_FILENAME)):
-            with open(join(folder, RESULTS_FILENAME), 'r') as f:
-                for line in f.readlines():
-                    if line.split(':')[0] == 'i':
-                        print(line.split(':')[1].replace('\n', ""))
-        else:
-            print("No bad figures exist")
-
-    ttk.Button(frm, text="Print all good figures", command=printGoodFigures).grid(row=3, column=0)
-    ttk.Button(frm, text="Print all interesting figures", command=printInterestingFigures).grid(row=3, column=1)
-    ttk.Button(frm, text="Print all bad figures", command=printBadFigures).grid(row=3, column=2)
+    ttk.Button(frm, text="Print all good figures",
+               command=lambda: printType(join(folder, RESULTS_FILENAME), 'g', 'Good')).grid(row=3, column=0)
+    ttk.Button(frm, text="Print all interesting figures",
+               command=lambda: printType(join(folder, RESULTS_FILENAME), 'i', 'Interesting')).grid(row=3, column=1)
+    ttk.Button(frm, text="Print all bad figures",
+               command=lambda: printType(join(folder, RESULTS_FILENAME), 'b', 'Bad')).grid(row=3, column=2)
 
     analyzerRoot.mainloop()
 
 
 def analyzerWeb(url):
-    url = url.replace("\n","")
+    url = url.replace("\n", "")
     filesGen = webpage.getWebPageImages(url)
 
     analyzerRoot = Tk()
@@ -130,7 +114,7 @@ def analyzerWeb(url):
     panel = Label(frm, image=img)
     panel.grid(row=1, columnspan=3)
 
-    def nextImage():
+    def nextHelper():
         nonlocal name
         nonlocal file
         try:
@@ -147,55 +131,20 @@ def analyzerWeb(url):
 
     thisResultsFileName = url.split('/')[-2] + "_" + RESULTS_FILENAME
 
-    def goodImage():
-        with open(thisResultsFileName, 'a+') as f:
-            f.write(f"g:{name}\n")
-        nextImage()
+    def nextImage(prefix: str):
+        writeImageResult(thisResultsFileName, prefix, name)
+        nextHelper()
 
-    def badImage():
-        with open(thisResultsFileName, 'a+') as f:
-            f.write(f"b:{name}\n")
-        nextImage()
+    ttk.Button(frm, text="Good Figure", command=lambda: nextImage('g')).grid(row=2, column=0)
+    ttk.Button(frm, text="Interesting Figure", command=lambda: nextImage('i')).grid(row=2, column=1)
+    ttk.Button(frm, text="Bad Figure", command=lambda: nextImage('r')).grid(row=2, column=2)
 
-    def interestingImage():
-        with open(thisResultsFileName, 'a+') as f:
-            f.write(f"i:{name}\n")
-        nextImage()
-
-    ttk.Button(frm, text="Good Figure", command=goodImage).grid(row=2, column=0)
-    ttk.Button(frm, text="Interesting Figure", command=interestingImage).grid(row=2, column=1)
-    ttk.Button(frm, text="Bad Figure", command=badImage).grid(row=2, column=2)
-
-    def printGoodFigures():
-        if exists(thisResultsFileName):
-            with open(thisResultsFileName, 'r') as f:
-                for line in f.readlines():
-                    if line.split(':')[0] == 'g':
-                        print(line.split(':')[1].replace('\n', ""))
-        else:
-            print("No good figures exist")
-
-    def printBadFigures():
-        if exists(thisResultsFileName):
-            with open(thisResultsFileName, 'r') as f:
-                for line in f.readlines():
-                    if line.split(':')[0] == 'b':
-                        print(line.split(':')[1].replace('\n', ""))
-        else:
-            print("No bad figures exist")
-
-    def printInterestingFigures():
-        if exists(thisResultsFileName):
-            with open(thisResultsFileName, 'r') as f:
-                for line in f.readlines():
-                    if line.split(':')[0] == 'i':
-                        print(line.split(':')[1].replace('\n', ""))
-        else:
-            print("No interesting figures exist")
-
-    ttk.Button(frm, text="Print all good figures", command=printGoodFigures).grid(row=3, column=0)
-    ttk.Button(frm, text="Print all interesting figures", command=printInterestingFigures).grid(row=3, column=1)
-    ttk.Button(frm, text="Print all bad figures", command=printBadFigures).grid(row=3, column=2)
+    ttk.Button(frm, text="Print all good figures", command=lambda: printType(thisResultsFileName, 'g', 'Good')).grid(
+        row=3, column=0)
+    ttk.Button(frm, text="Print all interesting figures",
+               command=lambda: printType(thisResultsFileName, 'i', 'Interesting')).grid(row=3, column=1)
+    ttk.Button(frm, text="Print all bad figures", command=lambda: printType(thisResultsFileName, 'b', 'Bad')).grid(
+        row=3, column=2)
 
     analyzerRoot.mainloop()
 
