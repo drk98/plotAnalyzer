@@ -7,6 +7,12 @@ To install, clone then run
 pip install .
 ```
 
+or
+
+```
+pip install git+git@github.com:drk98/plotAnalyzer.git
+```
+
 ## Running
 
 To run, execute `plotAnalyzer`
