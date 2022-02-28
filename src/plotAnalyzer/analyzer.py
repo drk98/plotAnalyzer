@@ -2,6 +2,8 @@ from tkinter import Tk, ttk, filedialog, Label, Canvas, PhotoImage, Button
 from os import listdir
 from os.path import isfile, join, splitext, exists, isdir
 import plotAnalyzer.webpage as webpage
+import webbrowser
+
 
 validExtensions = [".png"]
 RESULTS_FILENAME = "figureResults.txt"
@@ -111,8 +113,9 @@ def analyzerWeb(url):
     fnameLabel.grid(row=0, column=0, columnspan=3)
 
     img = PhotoImage(master=frm, file=file)
-    panel = Label(frm, image=img)
+    panel = Label(frm, image=img, cursor= "hand2")
     panel.grid(row=1, columnspan=3)
+    panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url+name))
 
     def nextHelper():
         nonlocal name
@@ -125,6 +128,7 @@ def analyzerWeb(url):
         nextImg = PhotoImage(master=frm, file=file)
         panel.configure(image=nextImg, width=nextImg.width(), height=nextImg.height())
         panel.image = nextImg
+        panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url + name))
 
         fnameLabel.configure(text=url + name)
         fnameLabel.text = url + name
