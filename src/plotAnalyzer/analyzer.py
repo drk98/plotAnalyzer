@@ -1,8 +1,7 @@
 from tkinter import Tk, ttk, filedialog, Label, Canvas, PhotoImage, Button
 from os import listdir
 from os.path import isfile, join, splitext, exists, isdir
-import webpage
-import analyzer
+import plotAnalyzer.webpage as webpage
 
 validExtensions = [".png"]
 RESULTS_FILENAME = "figureResults.txt"

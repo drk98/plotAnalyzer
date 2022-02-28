@@ -1,5 +1,5 @@
 from tkinter import Tk, ttk, END, Text
-import analyzer
+import plotAnalyzer.analyzer as analyzer
 
 
 def main():
