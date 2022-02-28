@@ -6,8 +6,9 @@ from pdf2image import convert_from_path
 
 RESULTS_FILENAME = "figureResults.txt"
 
+
 def getWebPageImages(url):
-    url = url.replace('\n',"")
+    url = url.replace('\n', "")
     resp = get(url)
     soup = BeautifulSoup(resp.text, features="html.parser")
 
@@ -16,11 +17,11 @@ def getWebPageImages(url):
     if exists(thisResultsFileName):
         with open(thisResultsFileName, 'r') as f:
             for line in f.readlines():
-                doneFiles.append(line.split(':')[1].replace("\n",""))
+                doneFiles.append(line.split(':')[1].replace("\n", ""))
     for link in soup.find_all('a'):
-        #print(link)
+
         if link.get('href')[-1] != '/' and link.get('href') not in doneFiles:
-            #print(link)
+
             r = get(url + link.get('href'))
             if splitext(link.get('href'))[1] == '.pdf':
                 pdfTmpFile = tempfile.NamedTemporaryFile()

@@ -3,6 +3,7 @@ from os import listdir
 from os.path import isfile, join, splitext, exists, isdir
 import plotAnalyzer.webpage as webpage
 import webbrowser
+import plotAnalyzer.Display as Display
 
 
 validExtensions = [".png"]
@@ -10,7 +11,6 @@ RESULTS_FILENAME = "figureResults.txt"
 
 
 def selectFolder() -> str:
-    return "/home/daniel/Desktop/weridast"
     return filedialog.askdirectory()
 
 
@@ -149,6 +149,16 @@ def analyzerWeb(url):
                command=lambda: printType(thisResultsFileName, 'i', 'Interesting')).grid(row=3, column=1)
     ttk.Button(frm, text="Print all bad figures", command=lambda: printType(thisResultsFileName, 'b', 'Bad')).grid(
         row=3, column=2)
+
+    def display(fname:str, type:str):
+        Display.display(fname, type, url)
+
+    ttk.Button(frm, text="Display all good figures", command=lambda: display(thisResultsFileName, 'g')).grid(
+        row=4, column=0)
+    ttk.Button(frm, text="Display all interesting figures", command=lambda: display(thisResultsFileName, 'i')).grid(
+        row=4, column=1)
+    ttk.Button(frm, text="Display all bad figures", command=lambda: display(thisResultsFileName, 'b')).grid(
+        row=4, column=2)
 
     analyzerRoot.mainloop()
 
