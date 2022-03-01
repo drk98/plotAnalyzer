@@ -141,7 +141,7 @@ def analyzerWeb(url):
 
     ttk.Button(frm, text="Good Figure", command=lambda: nextImage('g')).grid(row=2, column=0)
     ttk.Button(frm, text="Interesting Figure", command=lambda: nextImage('i')).grid(row=2, column=1)
-    ttk.Button(frm, text="Bad Figure", command=lambda: nextImage('r')).grid(row=2, column=2)
+    ttk.Button(frm, text="Bad Figure", command=lambda: nextImage('b')).grid(row=2, column=2)
 
     ttk.Button(frm, text="Print all good figures", command=lambda: printType(thisResultsFileName, 'g', 'Good')).grid(
         row=3, column=0)
