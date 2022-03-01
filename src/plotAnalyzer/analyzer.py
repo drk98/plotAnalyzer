@@ -105,17 +105,18 @@ def analyzerWeb(url):
 
     try:
         file, name = next(filesGen)
+        fnameLabel = Label(frm, text=url + name)
+        fnameLabel.grid(row=0, column=0, columnspan=3)
+
+        img = PhotoImage(master=frm, file=file)
+        panel = Label(frm, image=img, cursor="hand2")
+        panel.grid(row=1, columnspan=3)
+        panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url + name))
     except StopIteration:
         print(f"No images found at URL: {url}")
-        analyzerRoot.destroy()
-        return
-    fnameLabel = Label(frm, text=url + name)
-    fnameLabel.grid(row=0, column=0, columnspan=3)
+        # analyzerRoot.destroy()
+        # return
 
-    img = PhotoImage(master=frm, file=file)
-    panel = Label(frm, image=img, cursor= "hand2")
-    panel.grid(row=1, columnspan=3)
-    panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url+name))
 
     def nextHelper():
         nonlocal name
