@@ -1,12 +1,13 @@
 from tkinter import Tk, ttk, filedialog, Label, Canvas, PhotoImage, Button, RIGHT, Y
 from plotAnalyzer.webpage import RESULTS_FILENAME
-from os.path import exists, splitext
+from os.path import exists, splitext, join
 import tempfile
 from requests import get
 from pdf2image import convert_from_path
 import webbrowser
 from PIL import Image, ImageTk
 from plotAnalyzer.tooltip import CreateToolTip
+
 
 class ScrollableFrame(ttk.Frame):
     """
@@ -36,7 +37,9 @@ class ScrollableFrame(ttk.Frame):
         # scrollbar.grid(row=0, column=1, rowspan=1)
 
 
-def display(fname: str, type: str, url: str):
+def display(fname: str, type: str, url: str = None, folder: str = None):
+    assert url is not None or folder is not None
+
     displayRoot = Tk()
     displayRoot.title("Wall")
     # displayRoot.geometry(f"1000x1000")
@@ -60,24 +63,28 @@ def display(fname: str, type: str, url: str):
     height = 0
     tempFiles = [None for _ in range(len(typeFiles))]
     for i, file in enumerate(typeFiles):
-        r = get(url + file)
-        if splitext(file)[1] == '.pdf':
-            pdfTmpFile = tempfile.NamedTemporaryFile()
+        if url is not None:
+            r = get(url + file)
+            if splitext(file)[1] == '.pdf':
+                pdfTmpFile = tempfile.NamedTemporaryFile()
 
-            pdfTmpFile.write(r.content)
-            images = convert_from_path(pdfTmpFile.name)
+                pdfTmpFile.write(r.content)
+                images = convert_from_path(pdfTmpFile.name)
 
-            pdfTmpFile.close()
+                pdfTmpFile.close()
 
-            tempFiles[i] = tempfile.NamedTemporaryFile(suffix='.png')
-            images[0].save(tempFiles[i].name, 'PNG')
+                tempFiles[i] = tempfile.NamedTemporaryFile(suffix='.png')
+                images[0].save(tempFiles[i].name, 'PNG')
 
 
+            else:
+                tempFiles[i] = tempfile.NamedTemporaryFile(suffix=splitext(file)[1])
+                tempFiles[i].write(r.content)
+
+            image = Image.open(tempFiles[i].name)
         else:
-            tempFiles[i] = tempfile.NamedTemporaryFile(suffix=splitext(file)[1])
-            tempFiles[i].write(r.content)
+            image = Image.open(join(folder, file))
 
-        image = Image.open(tempFiles[i].name)
         resize_image = image.resize((int(image.width / 3), int(image.height / 3)))
         width, height = (int(image.width), int(image.height))
 
@@ -97,11 +104,12 @@ def display(fname: str, type: str, url: str):
 
         CreateToolTip(panel, file)
 
+    if url is not None:
+        for tf in tempFiles:
+            tf.close()
 
-    for tf in tempFiles:
-        tf.close()
     displayRoot.geometry(f"{width + 10}x{height + 10}")
-    frm.canvas.width=width-15
-    frm.canvas.height=height-15
-    frm.canvas.configure(width=width-15, height=height-15)
+    frm.canvas.width = width - 15
+    frm.canvas.height = height - 15
+    frm.canvas.configure(width=width - 15, height=height - 15)
     displayRoot.mainloop()

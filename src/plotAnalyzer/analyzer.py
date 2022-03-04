@@ -91,6 +91,17 @@ def analyzerFiles(folder=None):
     ttk.Button(frm, text="Print all bad figures",
                command=lambda: printType(join(folder, RESULTS_FILENAME), 'b', 'Bad')).grid(row=3, column=2)
 
+
+    def display(fname:str, type:str):
+        Display.display(fname, type, folder=folder)
+
+    ttk.Button(frm, text="Display all good figures", command=lambda: display((join(folder, RESULTS_FILENAME), 'g')).grid(
+        row=4, column=0)
+    ttk.Button(frm, text="Display all interesting figures", command=lambda: display((join(folder, RESULTS_FILENAME), 'i')).grid(
+        row=4, column=1)
+    ttk.Button(frm, text="Display all bad figures", command=lambda: display((join(folder, RESULTS_FILENAME), 'b')).grid(
+        row=4, column=2)
+
     analyzerRoot.mainloop()
 
 
@@ -152,7 +163,7 @@ def analyzerWeb(url):
         row=3, column=2)
 
     def display(fname:str, type:str):
-        Display.display(fname, type, url)
+        Display.display(fname, type, url=url)
 
     ttk.Button(frm, text="Display all good figures", command=lambda: display(thisResultsFileName, 'g')).grid(
         row=4, column=0)
