@@ -175,8 +175,14 @@ def analyzerWeb(url):
     analyzerRoot.mainloop()
 
 
-def analyzerLoop(dest=None):
+def analyzerLoop(dest=None, file=None):
+
+    if file is not None:
+        with open(file.replace('\n', ''), 'r') as f:
+            dest = f.readline()
+
     if dest is None or isdir(dest):
         analyzerFiles(dest)
     else:
         analyzerWeb(dest)
+

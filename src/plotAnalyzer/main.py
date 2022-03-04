@@ -13,7 +13,14 @@ def main():
                       width=30)
     urltxt.grid(row=0)
 
-    ttk.Button(frm, text="Open", command=lambda: analyzer.analyzerLoop(urltxt.get("1.0", END))).grid(column=0, row=1)
+    ttk.Button(frm, text="Open", command=lambda: analyzer.analyzerLoop(dest=urltxt.get("1.0", END))).grid(column=1, row=0)
+
+    filetxt = Text(frm,
+                  height=1,
+                  width=30)
+    filetxt.grid(row=1)
+
+    ttk.Button(frm, text="Open", command=lambda: analyzer.analyzerLoop(file=filetxt.get("1.0", END))).grid(column=1, row=1)
 
     root.mainloop()
 
