@@ -76,7 +76,6 @@ def display(fname: str, type: str, url: str = None, folder: str = None):
                 tempFiles[i] = tempfile.NamedTemporaryFile(suffix='.png')
                 images[0].save(tempFiles[i].name, 'PNG')
 
-
             else:
                 tempFiles[i] = tempfile.NamedTemporaryFile(suffix=splitext(file)[1])
                 tempFiles[i].write(r.content)
@@ -94,13 +93,11 @@ def display(fname: str, type: str, url: str = None, folder: str = None):
         panel = Label(frm.scrollable_frame, image=img, cursor="hand2")
         # panel = Label(frm, image=img, cursor="hand2")
         panel.grid(row=int(i / 3), columnspan=1, column=i % 3)
-        # if i % 3 == 0 and i != 0:
-        #     panel.pack(side="bottom")
-        # else:
-        #     panel.pack(side="right")
-        # panel.configure(image=img, width=img.width(), height=img.height())
+
         panel.image = img
-        panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url + file))
+        if url is not None:
+            tmp = lambda e, f=file: webbrowser.open_new_tab(url + f)
+            panel.bind('<Button-1>', tmp)
 
         CreateToolTip(panel, file)
 
