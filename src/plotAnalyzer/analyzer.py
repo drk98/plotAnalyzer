@@ -1,9 +1,12 @@
 from tkinter import Tk, ttk, filedialog, Label, Canvas, PhotoImage, Button
+import tkinter as tk
 from os import listdir
 from os.path import isfile, join, splitext, exists, isdir
 import plotAnalyzer.webpage as webpage
 import webbrowser
 import plotAnalyzer.Display as Display
+from PIL import Image, ImageTk
+
 
 
 validExtensions = [".png"]
@@ -61,14 +64,25 @@ def analyzerFiles(folder=None):
     fnameLabel = Label(frm, text=join(folder, files[i]))
     fnameLabel.grid(row=0, column=0, columnspan=3)
 
-    img = PhotoImage(master=frm, file=join(folder, files[i]))
+    def imgResize(_img):
+        w,h = _img.size
+        if w > .9*1280 or h > .9*720:
+            maxrat = .9*max(w/1280, w/720)
+
+            return _img.resize((int(w/maxrat), int(h/maxrat)), Image.ANTIALIAS)
+        return _img
+
+
+    img = ImageTk.PhotoImage(imgResize(Image.open(join(folder, files[i]))))
+    # img = PhotoImage(master=frm, file=join(folder, files[i]))
     panel = Label(frm, image=img)
     panel.grid(row=1, columnspan=3)
 
     def nextHelper():
         nonlocal i
 
-        nextImg = PhotoImage(master=frm, file=join(folder, files[i]))
+        img = ImageTk.PhotoImage(imgResize(Image.open(join(folder, files[i]))))
+        # nextImg = PhotoImage(master=frm, file=join(folder, files[i]))
         panel.configure(image=nextImg, width=nextImg.width(), height=nextImg.height())
         panel.image = nextImg
 
@@ -109,18 +123,27 @@ def analyzerWeb(url):
     url = url.replace("\n", "")
     filesGen = webpage.getWebPageImages(url)
 
-    analyzerRoot = Tk()
+    analyzerRoot = tk.Toplevel()
     analyzerRoot.title('Analyzer')
     frm = ttk.Frame(analyzerRoot, padding=10)
     frm.grid()
+
+    def imgResize(_img):
+        w,h = _img.size
+        if w > .9*1280 or h > .9*720:
+            maxrat = .9*max(w/1280, w/720)
+
+            return _img.resize((int(w/maxrat), int(h/maxrat)), Image.ANTIALIAS)
+        return _img
+
+
 
     try:
         file, name = next(filesGen)
         fnameLabel = Label(frm, text=url + name)
         fnameLabel.grid(row=0, column=0, columnspan=3)
-
-        img = PhotoImage(master=frm, file=file)
-        panel = Label(frm, image=img, cursor="hand2")
+        img = ImageTk.PhotoImage(imgResize(Image.open(file)))
+        panel = Label(master=frm, image=img, cursor="hand2")
         panel.grid(row=1, columnspan=3)
         panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url + name))
     except StopIteration:
@@ -137,7 +160,8 @@ def analyzerWeb(url):
         except StopIteration:
             print(f"All files in {url} have been categorized")
             return
-        nextImg = PhotoImage(master=frm, file=file)
+
+        img = ImageTk.PhotoImage(imgResize(Image.open(file)))
         panel.configure(image=nextImg, width=nextImg.width(), height=nextImg.height())
         panel.image = nextImg
         panel.bind('<Button-1>', lambda e: webbrowser.open_new_tab(url + name))
