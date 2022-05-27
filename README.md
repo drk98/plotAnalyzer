@@ -10,7 +10,7 @@ pip install .
 or
 
 ```
-pip install git+git@github.com:drk98/plotAnalyzer.git
+python -m pip install git+https://github.com/drk98/plotAnalyzer
 ```
 
 ## Running
