@@ -54,7 +54,7 @@ def analyzerFiles(folder=None):
         folder = selectFolder()
 
     files = getFiles(folder)
-    analyzerRoot = Tk()
+    analyzerRoot = tk.Toplevel()
     analyzerRoot.title('Analyzer')
     frm = ttk.Frame(analyzerRoot, padding=10)
     frm.grid()
