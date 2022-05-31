@@ -90,12 +90,17 @@ def analyzerFiles(folder=None):
         fnameLabel.text = join(folder, files[i])
         
 
+    toWrite = True
     def nextImage(prefix: str):
-        if i >= len(files)-1:
+        if i > len(files)-1:
+            nonlocal toWrite
+            toWrite=False
             print(f"All files in {folder} have been categorized")
             return
-        writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i])
+        if toWrite:
+            writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i])
         nextHelper()
+
 
     ttk.Button(frm, text="Good Figure", command=lambda: nextImage('g')).grid(row=2, column=0)
     ttk.Button(frm, text="Interesting Figure", command=lambda: nextImage('i')).grid(row=2, column=1)
