@@ -80,9 +80,6 @@ def analyzerFiles(folder=None):
 
     def nextHelper():
         nonlocal i
-        if i >= len(files):
-            print(f"All files in {folder} have been categorized")
-            return
 
         nextImg = ImageTk.PhotoImage(imgResize(Image.open(join(folder, files[i]))))
         # nextImg = PhotoImage(master=frm, file=join(folder, files[i]))
@@ -94,6 +91,9 @@ def analyzerFiles(folder=None):
         i += 1
 
     def nextImage(prefix: str):
+        if i >= len(files):
+            print(f"All files in {folder} have been categorized")
+            return
         writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i-1])
         nextHelper()
 
