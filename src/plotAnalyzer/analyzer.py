@@ -91,7 +91,7 @@ def analyzerFiles(folder=None):
         
 
     def nextImage(prefix: str):
-        if i >= len(files):
+        if i >= len(files)-1:
             print(f"All files in {folder} have been categorized")
             return
         writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i])
