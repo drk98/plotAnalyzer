@@ -81,7 +81,7 @@ def analyzerFiles(folder=None):
     def nextHelper():
         nonlocal i
 
-        img = ImageTk.PhotoImage(imgResize(Image.open(join(folder, files[i]))))
+        nextImg = ImageTk.PhotoImage(imgResize(Image.open(join(folder, files[i]))))
         # nextImg = PhotoImage(master=frm, file=join(folder, files[i]))
         panel.configure(image=nextImg, width=nextImg.width(), height=nextImg.height())
         panel.image = nextImg
