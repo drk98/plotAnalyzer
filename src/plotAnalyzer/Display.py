@@ -1,4 +1,5 @@
 from tkinter import Tk, ttk, filedialog, Label, Canvas, PhotoImage, Button, RIGHT, Y
+import tkinter as tk
 from plotAnalyzer.webpage import RESULTS_FILENAME
 from os.path import exists, splitext, join
 import tempfile
@@ -40,7 +41,7 @@ class ScrollableFrame(ttk.Frame):
 def display(fname: str, type: str, url: str = None, folder: str = None):
     assert url is not None or folder is not None
 
-    displayRoot = Tk()
+    displayRoot = tk.Toplevel()
     displayRoot.title("Wall")
     # displayRoot.geometry(f"1000x1000")
 
@@ -50,7 +51,10 @@ def display(fname: str, type: str, url: str = None, folder: str = None):
     # frm.pack()
 
     typeFiles = []
-    thisResultsFileName = url.split('/')[-2] + "_" + RESULTS_FILENAME
+    if url is not None:
+        thisResultsFileName = url.split('/')[-2] + "_" + RESULTS_FILENAME
+    else:
+        thisResultsFileName = join(folder, RESULTS_FILENAME)
     if exists(thisResultsFileName):
         with open(thisResultsFileName, 'r') as f:
             for line in f.readlines():
@@ -82,6 +86,7 @@ def display(fname: str, type: str, url: str = None, folder: str = None):
 
             image = Image.open(tempFiles[i].name)
         else:
+            tempFiles[i] = tempfile.NamedTemporaryFile(suffix=splitext(file)[1])
             image = Image.open(join(folder, file))
 
         resize_image = image.resize((int(image.width / 3), int(image.height / 3)))
