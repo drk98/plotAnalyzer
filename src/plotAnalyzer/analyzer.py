@@ -80,7 +80,7 @@ def analyzerFiles(folder=None):
 
     def nextHelper():
         nonlocal i
-
+        i += 1
         nextImg = ImageTk.PhotoImage(imgResize(Image.open(join(folder, files[i]))))
         # nextImg = PhotoImage(master=frm, file=join(folder, files[i]))
         panel.configure(image=nextImg, width=nextImg.width(), height=nextImg.height())
@@ -88,13 +88,13 @@ def analyzerFiles(folder=None):
 
         fnameLabel.configure(text=join(folder, files[i]))
         fnameLabel.text = join(folder, files[i])
-        i += 1
+        
 
     def nextImage(prefix: str):
         if i >= len(files):
             print(f"All files in {folder} have been categorized")
             return
-        writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i-1])
+        writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i])
         nextHelper()
 
     ttk.Button(frm, text="Good Figure", command=lambda: nextImage('g')).grid(row=2, column=0)
