@@ -50,7 +50,7 @@ def writeImageResult(filePath: str, prefix: str, toWrite: str):
 
 
 def analyzerFiles(folder=None):
-    if folder is None:
+    if folder is None or folder == '':
         folder = selectFolder()
 
     files = getFiles(folder)
@@ -205,7 +205,8 @@ def analyzerLoop(dest=None, file=None):
         with open(file.replace('\n', ''), 'r') as f:
             dest = f.readline()
 
-    if dest is None or isdir(dest):
+    dest = dest.replace('\n','')
+    if dest is None or dest == '' or isdir(dest):
         analyzerFiles(dest)
     else:
         analyzerWeb(dest)
