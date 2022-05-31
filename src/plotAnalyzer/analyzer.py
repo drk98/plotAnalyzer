@@ -91,7 +91,7 @@ def analyzerFiles(folder=None):
         i += 1
 
     def nextImage(prefix: str):
-        writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i])
+        writeImageResult(join(folder, RESULTS_FILENAME), prefix, files[i-1])
         nextHelper()
 
     ttk.Button(frm, text="Good Figure", command=lambda: nextImage('g')).grid(row=2, column=0)
